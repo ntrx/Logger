@@ -1,6 +1,6 @@
 /*
 	Модуль записи GNSS данных у файл 
-	Версия 2, от 27.06.2019 11:00
+	Версия 2.1, от 22.01.2020 11:48
 */
 
 #include "log_struct.h" // <- файл структуры записи 
@@ -129,7 +129,7 @@ void debug_get_time(char* Mas) {
 // compare last record and create work log file
 // Функция нахождения последней записи в двух файлах и создание текущего рабочего лог-файла
 void logger_get_record() {
-	// version 2 ()
+	// version 2.1 (22.01.2020 11:48)
 	FILE *fp1, *fp2;
 
 	// Проверка на существование файла №1
@@ -152,6 +152,7 @@ void logger_get_record() {
 		fread(&TBData, sizeof(TBData), 1, fp1);
 		last_record_f1 = TBData.Number;
 		launches = TBData.NumberWkl+1;
+		printf("Logger: found launches in %s: %d\n", log_file1, launches);
 	}
 	fclose(fp1);
 	
@@ -179,7 +180,8 @@ void logger_get_record() {
 		// read last struct for last record
 		fread(&TBData, sizeof(TBData), 1, fp2);
 		last_record_f2 = TBData.Number;
-		launches = TBData.NumberWkl+1;	
+		launches = TBData.NumberWkl+1 > launches ? TBData.NumberWkl+1 : launches;	
+		printf("Logger: found launches in %s: %d\n", log_file2, TBData.NumberWkl+1);
 	}
 	fclose (fp2);
 	// Проверка совместимости аналогично файлу №1
@@ -351,7 +353,7 @@ INT32S log_exp_onkey(TmRectangle *PRec, INT32S &Key) {
 	if (Key == kl_ENT) 
 		log_export();
 	if (Key == kl_ESC) 
-		FormChange(&Frm2,_UsbNext_);
+		RequestForm_1(_UsbNext_,-1);
 	return 1;
 }
 
