@@ -1,3 +1,5 @@
+#ifndef LOG_STRUCT_H
+#define LOG_STRUCT_H
 #define LOG_ID 10601
 #pragma pack(push, 1)
 struct TRecordData {
@@ -49,4 +51,6 @@ struct TBlockData {
 	char tk[8]; //WindNav.tk;
     unsigned int CS;			//контрольная сумма
 };
+extern struct TBlockData BlockData1;
 #pragma pack(pop)
+#endif
